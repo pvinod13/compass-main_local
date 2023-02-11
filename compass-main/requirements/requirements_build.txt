@@ -1,0 +1,5 @@
+build==0.8.0
+twine==4.0.1
+pre-commit
+keyring==23.0.1
+black

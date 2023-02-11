@@ -1,0 +1,81 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ["3.7.9","3.8" ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install virtual environment
+        run: |
+          python -m venv .venv
+      
+      - name: Install build system and test tool
+        run: |
+          .venv\Scripts\python -m pip install --upgrade pip
+          .venv\Scripts\python -m pip install poetry==1.1.15 tox flake8
+
+      - name: Lint with flake8
+        run: |
+          .venv\Scripts\poetry run python -m flake8 .
+      
+      - name: Configure build system
+        run: |
+          .venv\Scripts\poetry config virtualenvs.in-project true
+          .venv\Scripts\poetry config repositories.pyansys-private-pypi https://pkgs.dev.azure.com/pyansys/_packaging/pyansys/pypi/simple/
+          .venv\Scripts\poetry config http-basic.pyansys-private-pypi PAT ${{ secrets.PYANSYS_PRIVATE_PYPI_PAT }} 
+          .venv\Scripts\poetry config repositories.solutions-private-pypi https://pkgs.dev.azure.com/pyansys/_packaging/ansys-solutions/pypi/simple/
+          .venv\Scripts\poetry config http-basic.solutions-private-pypi PAT ${{ secrets.SOLUTIONS_PRIVATE_PYPI_PAT }} 
+
+
+      - name: Install required dependencies
+        run: |
+          .venv\Scripts\poetry install -vvv
+
+      - name: Install optional dependencies
+        run: |
+          .venv\Scripts\python -m pip install -r requirements/requirements_tests.txt
+          .venv\Scripts\python -m pip install -r requirements/requirements_build.txt
+          .venv\Scripts\python -m pip install -r requirements/requirements_doc.txt
+
+      - name: Test with pytest
+        run: |
+          .venv\Scripts\python -m pytest
+
+  package:
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          echo $GITHUB_RUN_NUMBER
+          echo $GITHUB_RUN_NUMBER > version.txt
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: webapp-poc
+          path: |
+            src/
+            requirements/
+            files/
+            start_app.bat
+            setup_environment.bat
+            pyproject.toml
+            version.txt
+            set_PRIVATE_PYPI_PAT_to_env.bat
+            README.rst
+            ansys_mechanical_core-0.5.dev0-py3-none-any.whl

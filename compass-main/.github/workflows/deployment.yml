@@ -1,0 +1,53 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, CDC, Mechanical_v231]
+    steps:
+    - uses: actions/checkout@v3
+
+    - run: |
+        echo $GITHUB_RUN_NUMBER
+        echo $GITHUB_RUN_NUMBER > version.txt
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: webapp-poc
+        path: |
+          src/
+          requirements/
+          files/
+          start_app.bat
+          setup_environment.bat
+          pyproject.toml
+          version.txt
+          set_PRIVATE_PYPI_PAT_to_env.bat
+          README.rst
+          ansys_mechanical_core-0.5.dev0-py3-none-any.whl    
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: webapp-poc
+        path: C:\webapp-poc
+
+    - name: Install virtual environment
+      working-directory: C:\webapp-poc
+      run: |
+        python -m venv .venv
+    
+    - name: Install application
+      working-directory: C:\webapp-poc
+      run: |
+        .venv\Scripts\python -m pip install --upgrade pip
+        .venv\Scripts\python -m pip install poetry
+        .\setup_environment.bat -d all -s 1.1.15 -p pyansys-solutions 
+
+
+
+

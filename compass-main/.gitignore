@@ -1,0 +1,91 @@
+# building / packaging
+dist/
+sdist/
+*.egg-info
+**\mechanical_embedding.egg-info
+__pycache__/
+*.egg
+poetry.lock
+
+# compiled source
+*.pyc
+*.pyd
+*.c
+*.cpp
+*.so
+*.o
+*.cache
+
+# docs
+_autosummary
+doc/build_errors.txt
+
+# emacs
+flycheck*
+
+# IDEs local settings
+.vscode/
+.idea/
+/.vs
+
+
+# jupyterlab
+/node_modules
+yarn.lock
+jupyterlab/docker/*.tar.gz
+examples/.local
+.ipynb_checkpoints/
+
+
+# OS generated files 
+.docusaurus
+.cache-loader
+.fuse_hidden*
+*~
+*swp
+
+
+# misc
+_build/
+pyansys/Interface.py
+doc/source/examples/*
+*.out
+*.tar.gz
+*.mypy_cache
+
+
+# testing
+factory/
+Testing/
+UnitTesting/
+TODO
+test.sh
+.pytest_cache/
+tests/.coverage
+tests/htmlcov
+tests/cyclic/htmlcov
+.coverage
+*,cover
+.benchmarks/
+test-output.xml
+\#*
+.\#*
+/.ipynb_checkpoints
+
+
+# test scripts
+*.cmd
+wheelhouse/
+
+
+# temp 
+tmp.out
+
+# virtual environment
+venv/
+.venv
+
+#log file
+batch.log
+launcher.log
+

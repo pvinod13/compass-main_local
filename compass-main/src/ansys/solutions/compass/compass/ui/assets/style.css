@@ -1,0 +1,21 @@
+/*©2022, ANSYS Inc. Unauthorized use, distribution or duplication is prohibited.*/
+.back-link {
+    text-align: right;
+}
+
+.accordion-button {
+    text-align: left;
+    /* font-weight: bold; */
+    display: block;
+    color:#fff;
+    background-color:#000000;
+    border-color:#000000;
+}
+
+.accordion-button:not(.collapsed) {
+    text-align: left;
+    display: block;
+    color:#fff;
+    background-color:#000000;
+    border-color:#000000;
+}
